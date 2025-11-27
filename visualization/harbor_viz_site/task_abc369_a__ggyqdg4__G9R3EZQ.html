@@ -99,102 +99,21 @@ print(len(possible_x))</code></pre></div>
         <div class="resize-handle" id="sidebar-resizer" title="Drag to resize"></div>
         <main class="main">
             <div class="tab-nav">
-                <button onclick="switchTab('agent')" class="tab-btn active" id="btn-agent"><span>🕵️</span> Agent Judge <span class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full ml-2">Trajectory</span></button>
-                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full ml-2">Reasoning</span></button>
-                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Test <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full ml-2">Logs</span></button>
+                <button onclick="switchTab('agent-multi')" class="tab-btn active" id="btn-agent-multi"><span>🕹️</span> Agent Multi-Aspect</button>
+                <button onclick="switchTab('agent-correctness')" class="tab-btn" id="btn-agent-correctness"><span>✅</span> Agent Correctness</button>
+                <button onclick="switchTab('agent-prompt')" class="tab-btn" id="btn-agent-prompt"><span>🔁</span> Agent → Unit Tests</button>
+                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge</button>
+                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Tests</button>
             </div>
-            <div id="tab-agent" class="tab-content active">
+            <div id="tab-agent-multi" class="tab-content active">
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-white p-6 rounded-lg border-l-4 border-purple-500 shadow-sm mb-8">
                         <div class="flex justify-between items-start mb-2"><h2 class="font-bold text-lg text-slate-800">Agent Verdict</h2><span class="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded border border-purple-100">Model: openhands</span></div>
                         <p class="text-slate-700 leading-relaxed">The algorithm correctly identifies all possible values of x that can form an arithmetic sequence with A and B. It handles edge cases, such as when A and B are equal, and efficiently computes the results within the given constraints.</p>
                     </div>
-                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3></div>
+                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3><span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded">⚠️ Demo: No logs available for this ID</span></div>
                     
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 1</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Write</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">I'll solve this step by step.
-
-First, let me understand the problem:
-- We have two integers A and B
-- We need to find how many integers x can be arranged with A and B to form an arithmetic sequence
-- An arithmetic sequence means the middle element is the average of the first and third
-
-Let me analyze the mathematical condition:
-- For any three numbers to form an arithmetic sequence in some order, one of them must be the average of the other two
-- So we need to find all x where one of these is true:
-  1. x is the average of A and B: x = (A + B) / 2
-  2. A is the average of B and x: A = (B + x) / 2, so x = 2A - B
-  3. B is the average of A and x: B = (A + x) / 2, so x = 2B - A
-
-Let me start by creating the solution:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'file_path': '/app/solution.py', 'content': 'A, B = map(int, input().split())\n\n# Find all possible x values\n# x is the average of A and B: x = (A + B) / 2\n# A is the average of B and x: x = 2A - B\n# B is the average of A and x: x = 2B - A\n\npossible_x = set()\n\n# Case 1: x = (A + B) / 2\nif (A + B) % 2 == 0:\n    possible_x.add((A + B) // 2)\n\n# Case 2: x = 2A - B\npossible_x.add(2 * A - B)\n\n# Case 3: x = 2B - A\npossible_x.add(2 * B - A)\n\nprint(len(possible_x))\n'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">File created successfully at: /app/solution.py</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 2</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Bash</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Now let me test this with the sample inputs:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'command': 'python check_solution.py', 'description': 'Run tests with check_solution.py'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">🧪 Running sample test cases to check your solution...
-
-Running 3 sample test case(s):
-
-✅ PASSED sample_test_1
-
-✅ PASSED sample_test_2
-
-✅ PASSED sample_test_3
-
-==================================================
-🎉 Great! All 3 sample test case(s) passed!
-Your solution looks good so far. The full test suite will run more comprehensive tests.
-==================================================</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 3</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Perfect! All sample tests pass. Let me verify my logic by manually checking the examples:
-
-**Sample 1: A=5, B=7**
-- x = (5 + 7) / 2 = 6 ✓
-- x = 2(5) - 7 = 3 ✓
-- x = 2(7) - 5 = 9 ✓
-- Total: 3 distinct values → Output: 3 ✓
-
-**Sample 2: A=6, B=1**
-- x = (6 + 1) / 2 = 3.5 (not integer, so skip)
-- x = 2(6) - 1 = 11 ✓
-- x = 2(1) - 6 = -4 ✓
-- Total: 2 distinct values → Output: 2 ✓
-
-**Sample 3: A=3, B=3**
-- x = (3 + 3) / 2 = 3 ✓
-- x = 2(3) - 3 = 3 ✓ (duplicate)
-- x = 2(3) - 3 = 3 ✓ (duplicate)
-- Total: 1 distinct value → Output: 1 ✓
-
-The solution correctly:
-1. Identifies the three possible values of x based on which element would be the middle of the arithmetic sequence
-2. Checks if (A+B)/2 is an integer before adding it
-3. Uses a set to automatically handle duplicates
-4. Counts the distinct values
-
-The solution is complete and all tests pass!
-</div></div>
-                                
-                                
-                            </div>
-                        </div>
-                        
+                         <div class="p-12 text-center border-2 border-dashed border-slate-300 rounded-lg bg-slate-50"><p class="text-slate-500 font-medium">No trajectory logs available for this task.</p><p class="text-slate-400 text-sm mt-2">(In this demo, only task <a href="task_2808__j8qegjl__ChgukeA.html" class="text-blue-600 underline hover:text-blue-800">2808...</a> has a real log file attached.)</p></div>
                     
                 </div>
             </div>

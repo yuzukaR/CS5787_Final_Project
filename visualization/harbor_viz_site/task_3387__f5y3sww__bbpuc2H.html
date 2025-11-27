@@ -160,127 +160,21 @@ class Solution:
         <div class="resize-handle" id="sidebar-resizer" title="Drag to resize"></div>
         <main class="main">
             <div class="tab-nav">
-                <button onclick="switchTab('agent')" class="tab-btn active" id="btn-agent"><span>🕵️</span> Agent Judge <span class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full ml-2">Trajectory</span></button>
-                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full ml-2">Reasoning</span></button>
-                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Test <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full ml-2">Logs</span></button>
+                <button onclick="switchTab('agent-multi')" class="tab-btn active" id="btn-agent-multi"><span>🕹️</span> Agent Multi-Aspect</button>
+                <button onclick="switchTab('agent-correctness')" class="tab-btn" id="btn-agent-correctness"><span>✅</span> Agent Correctness</button>
+                <button onclick="switchTab('agent-prompt')" class="tab-btn" id="btn-agent-prompt"><span>🔁</span> Agent → Unit Tests</button>
+                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge</button>
+                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Tests</button>
             </div>
-            <div id="tab-agent" class="tab-content active">
+            <div id="tab-agent-multi" class="tab-content active">
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-white p-6 rounded-lg border-l-4 border-purple-500 shadow-sm mb-8">
                         <div class="flex justify-between items-start mb-2"><h2 class="font-bold text-lg text-slate-800">Agent Verdict</h2><span class="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded border border-purple-100">Model: openhands</span></div>
                         <p class="text-slate-700 leading-relaxed">The algorithm correctly implements the logic to adjust the median to the desired value, but it does not handle the case where the median is already equal to k efficiently. Additionally, the solution could be optimized further to avoid unnecessary operations on elements that do not affect the median. Overall, it is a strong solution with minor potential concerns.</p>
                     </div>
-                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3></div>
+                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3><span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded">⚠️ Demo: No logs available for this ID</span></div>
                     
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 1</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">I'll help you solve this problem. Let me start by understanding the problem and then implementing a solution.
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the problem and plan the approach', 'status': 'in_progress', 'activeForm': 'Understanding the problem and planning the approach'}, {'content': 'Create solution.py with the implementation', 'status': 'pending', 'activeForm': 'Creating solution.py with the implementation'}, {'content': 'Run check_solution.py to test the solution', 'status': 'pending', 'activeForm': 'Running check_solution.py to test the solution'}, {'content': 'Fix any issues if tests fail', 'status': 'pending', 'activeForm': 'Fixing any issues if tests fail'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 2</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Write</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Let me understand the problem:
-
-1. We need to make the median of an array equal to k with minimum operations (increase/decrease by 1)
-2. Median is the middle element when sorted. If even length, take the larger of two middle elements.
-3. We can increment or decrement any element
-
-**Key insights:**
-- Sort the array first
-- Find the median position
-- For the median to become k, we must make the element at median position equal to k
-- Elements before the median (to the left) should be ≤ k
-- Elements after the median (to the right) should be ≥ k
-- This minimizes the number of operations needed
-
-Let me implement this solution:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'file_path': '/app/solution.py', 'content': 'from typing import List\n\nclass Solution:\n    def minOperationsToMakeMedianK(self, nums: List[int], k: int) -> int:\n        """\n        Find minimum operations to make median equal to k.\n\n        Strategy:\n        1. Sort the array\n        2. Find the median position\n        3. Make the median element equal to k\n        4. For elements before median: if they\'re > k, bring them down to k\n        5. For elements after median: if they\'re < k, bring them up to k\n        """\n        nums.sort()\n        n = len(nums)\n\n        # Find median position (for even length, take the larger index)\n        median_pos = n // 2\n\n        operations = 0\n\n        # Make the median element equal to k\n        operations += abs(nums[median_pos] - k)\n        nums[median_pos] = k\n\n        # For elements before median, ensure they\'re <= k\n        for i in range(median_pos):\n            if nums[i] > k:\n                operations += nums[i] - k\n                nums[i] = k\n\n        # For elements after median, ensure they\'re >= k\n        for i in range(median_pos + 1, n):\n            if nums[i] < k:\n                operations += k - nums[i]\n                nums[i] = k\n\n        return operations\n'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">File created successfully at: /app/solution.py</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 3</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the problem and plan the approach', 'status': 'completed', 'activeForm': 'Understanding the problem and planning the approach'}, {'content': 'Create solution.py with the implementation', 'status': 'completed', 'activeForm': 'Creating solution.py with the implementation'}, {'content': 'Run check_solution.py to test the solution', 'status': 'in_progress', 'activeForm': 'Running check_solution.py to test the solution'}, {'content': 'Fix any issues if tests fail', 'status': 'pending', 'activeForm': 'Fixing any issues if tests fail'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 4</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Bash</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Now let's test the solution:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'command': 'python check_solution.py', 'description': 'Run check_solution.py to test the solution'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">🧪 Running sample test cases to check your solution...
-
-Running 3 sample test case(s):
-
-✅ PASSED sample_test_1
-
-✅ PASSED sample_test_2
-
-✅ PASSED sample_test_3
-
-==================================================
-🎉 Great! All 3 sample test case(s) passed!
-Your solution looks good so far. The full test suite will run more comprehensive tests.
-==================================================</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 5</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Excellent! All tests pass. Let me update the todo list to reflect completion:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the problem and plan the approach', 'status': 'completed', 'activeForm': 'Understanding the problem and planning the approach'}, {'content': 'Create solution.py with the implementation', 'status': 'completed', 'activeForm': 'Creating solution.py with the implementation'}, {'content': 'Run check_solution.py to test the solution', 'status': 'completed', 'activeForm': 'Running check_solution.py to test the solution'}, {'content': 'Fix any issues if tests fail', 'status': 'completed', 'activeForm': 'Fixing any issues if tests fail'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 6</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Perfect! ✅ All sample tests passed. Here's a summary of the solution:
-
-## Solution Explanation
-
-The key insight is that after sorting, we need to:
-1. **Fix the median**: Make the element at the median position equal to k
-2. **Constrain left elements**: Ensure all elements to the left of median are ≤ k
-3. **Constrain right elements**: Ensure all elements to the right of median are ≥ k
-
-**Algorithm:**
-- Sort the array
-- Find median position: `n // 2` (for even-length arrays, this gives us the larger middle element)
-- Count operations to make median equal to k
-- For each element left of median that's > k, bring it down to k
-- For each element right of median that's < k, bring it up to k
-
-**Time Complexity:** O(n log n) due to sorting
-**Space Complexity:** O(1) excluding the sorting space
-
-The solution correctly handles all three examples:
-- Example 1: [2,5,6,8,5], k=4 → 2 operations
-- Example 2: [2,5,6,8,5], k=7 → 3 operations  
-- Example 3: [1,2,3,4,5,6], k=4 → 0 operations
-</div></div>
-                                
-                                
-                            </div>
-                        </div>
-                        
+                         <div class="p-12 text-center border-2 border-dashed border-slate-300 rounded-lg bg-slate-50"><p class="text-slate-500 font-medium">No trajectory logs available for this task.</p><p class="text-slate-400 text-sm mt-2">(In this demo, only task <a href="task_2808__j8qegjl__ChgukeA.html" class="text-blue-600 underline hover:text-blue-800">2808...</a> has a real log file attached.)</p></div>
                     
                 </div>
             </div>

@@ -146,119 +146,21 @@ class Solution:
         <div class="resize-handle" id="sidebar-resizer" title="Drag to resize"></div>
         <main class="main">
             <div class="tab-nav">
-                <button onclick="switchTab('agent')" class="tab-btn active" id="btn-agent"><span>🕵️</span> Agent Judge <span class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full ml-2">Trajectory</span></button>
-                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full ml-2">Reasoning</span></button>
-                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Test <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full ml-2">Logs</span></button>
+                <button onclick="switchTab('agent-multi')" class="tab-btn active" id="btn-agent-multi"><span>🕹️</span> Agent Multi-Aspect</button>
+                <button onclick="switchTab('agent-correctness')" class="tab-btn" id="btn-agent-correctness"><span>✅</span> Agent Correctness</button>
+                <button onclick="switchTab('agent-prompt')" class="tab-btn" id="btn-agent-prompt"><span>🔁</span> Agent → Unit Tests</button>
+                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge</button>
+                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Tests</button>
             </div>
-            <div id="tab-agent" class="tab-content active">
+            <div id="tab-agent-multi" class="tab-content active">
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-white p-6 rounded-lg border-l-4 border-purple-500 shadow-sm mb-8">
                         <div class="flex justify-between items-start mb-2"><h2 class="font-bold text-lg text-slate-800">Agent Verdict</h2><span class="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded border border-purple-100">Model: openhands</span></div>
                         <p class="text-slate-700 leading-relaxed">The algorithm correctly determines the color of chessboard squares based on the parity of the sum of their coordinates. It handles all valid inputs as specified in the problem statement, and the time complexity is O(1), which is optimal for this problem.</p>
                     </div>
-                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3></div>
+                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3><span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded">⚠️ Demo: No logs available for this ID</span></div>
                     
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 1</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">I'll help you solve this problem. Let me start by understanding the problem and creating a solution.
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the chessboard coloring pattern', 'status': 'in_progress', 'activeForm': 'Understanding the chessboard coloring pattern'}, {'content': 'Create solution.py with the Solution class', 'status': 'pending', 'activeForm': 'Creating solution.py with the Solution class'}, {'content': 'Test the solution with check_solution.py', 'status': 'pending', 'activeForm': 'Testing the solution with check_solution.py'}, {'content': 'Fix any issues and iterate until all tests pass', 'status': 'pending', 'activeForm': 'Fixing issues and iterating until tests pass'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 2</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Write</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Let me first understand the chessboard coloring pattern:
-- On a standard chessboard, squares alternate in color
-- The pattern depends on whether the sum of coordinates is even or odd
-- A square at position (column, row) is one color if (column + row) is even, and the other color if it's odd
-- Two squares have the same color if the parity of their coordinate sums is the same
-
-For example:
-- "a1": column = 'a' (1st column), row = 1 → sum = 1 + 1 = 2 (even) → black
-- "c3": column = 'c' (3rd column), row = 3 → sum = 3 + 3 = 6 (even) → black
-- "h3": column = 'h' (8th column), row = 3 → sum = 8 + 3 = 11 (odd) → white
-
-Let me create the solution:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'file_path': '/app/solution.py', 'content': 'class Solution:\n    def checkTwoChessboards(self, coordinate1: str, coordinate2: str) -> bool:\n        """\n        Check if two chessboard squares have the same color.\n\n        A square\'s color is determined by whether the sum of its coordinates is even or odd.\n        Two squares have the same color if the parity of their coordinate sums is the same.\n\n        Args:\n            coordinate1: A string like "a1" where \'a\' is the column and \'1\' is the row\n            coordinate2: A string like "c3" where \'c\' is the column and \'3\' is the row\n\n        Returns:\n            True if both squares have the same color, False otherwise\n        """\n        # Convert column letter to a number (a=1, b=2, ..., h=8)\n        col1 = ord(coordinate1[0]) - ord(\'a\') + 1\n        row1 = int(coordinate1[1])\n\n        col2 = ord(coordinate2[0]) - ord(\'a\') + 1\n        row2 = int(coordinate2[1])\n\n        # Calculate the sum of coordinates for each square\n        sum1 = col1 + row1\n        sum2 = col2 + row2\n\n        # Two squares have the same color if the parity of their sums is the same\n        return sum1 % 2 == sum2 % 2\n'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">File created successfully at: /app/solution.py</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 3</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Now let me update the todo and run the tests:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the chessboard coloring pattern', 'status': 'completed', 'activeForm': 'Understanding the chessboard coloring pattern'}, {'content': 'Create solution.py with the Solution class', 'status': 'completed', 'activeForm': 'Creating solution.py with the Solution class'}, {'content': 'Test the solution with check_solution.py', 'status': 'in_progress', 'activeForm': 'Testing the solution with check_solution.py'}, {'content': 'Fix any issues and iterate until all tests pass', 'status': 'pending', 'activeForm': 'Fixing issues and iterating until tests pass'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 4</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Bash</span></div>
-                            <div class="p-4">
-                                
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'command': 'python check_solution.py', 'description': 'Run the test suite for the solution'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">🧪 Running sample test cases to check your solution...
-
-Running 2 sample test case(s):
-
-✅ PASSED sample_test_1
-
-✅ PASSED sample_test_2
-
-==================================================
-🎉 Great! All 2 sample test case(s) passed!
-Your solution looks good so far. The full test suite will run more comprehensive tests.
-==================================================</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 5</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Perfect! All tests passed. Let me update the todo list to reflect completion:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the chessboard coloring pattern', 'status': 'completed', 'activeForm': 'Understanding the chessboard coloring pattern'}, {'content': 'Create solution.py with the Solution class', 'status': 'completed', 'activeForm': 'Creating solution.py with the Solution class'}, {'content': 'Test the solution with check_solution.py', 'status': 'completed', 'activeForm': 'Testing the solution with check_solution.py'}, {'content': 'Fix any issues and iterate until all tests pass', 'status': 'completed', 'activeForm': 'Fixing issues and iterating until tests pass'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 6</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Excellent! Your solution is complete and all tests pass. 
-
-## Summary
-
-I've successfully solved the "Check if Two Chessboard Squares Have the Same Color" problem with the following approach:
-
-**Key Insight**: On a chessboard, a square's color is determined by the parity (even/odd) of the sum of its coordinates. Two squares have the same color if and only if the parity of their coordinate sums is identical.
-
-**Algorithm**:
-1. Convert the column letter to a number (a=1, b=2, ..., h=8)
-2. Calculate the sum of column and row for each coordinate
-3. Check if both sums have the same parity (both even or both odd)
-
-**Complexity**:
-- Time: O(1) - constant time operations
-- Space: O(1) - no extra space required
-
-The solution correctly handles both example test cases:
-- "a1" and "c3": Both have even sums (2 and 6) → same color ✓
-- "a1" and "h3": Different parity (2 is even, 11 is odd) → different color ✓
-</div></div>
-                                
-                                
-                            </div>
-                        </div>
-                        
+                         <div class="p-12 text-center border-2 border-dashed border-slate-300 rounded-lg bg-slate-50"><p class="text-slate-500 font-medium">No trajectory logs available for this task.</p><p class="text-slate-400 text-sm mt-2">(In this demo, only task <a href="task_2808__j8qegjl__ChgukeA.html" class="text-blue-600 underline hover:text-blue-800">2808...</a> has a real log file attached.)</p></div>
                     
                 </div>
             </div>

@@ -157,146 +157,21 @@ class Solution:
         <div class="resize-handle" id="sidebar-resizer" title="Drag to resize"></div>
         <main class="main">
             <div class="tab-nav">
-                <button onclick="switchTab('agent')" class="tab-btn active" id="btn-agent"><span>🕵️</span> Agent Judge <span class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full ml-2">Trajectory</span></button>
-                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full ml-2">Reasoning</span></button>
-                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Test <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full ml-2">Logs</span></button>
+                <button onclick="switchTab('agent-multi')" class="tab-btn active" id="btn-agent-multi"><span>🕹️</span> Agent Multi-Aspect</button>
+                <button onclick="switchTab('agent-correctness')" class="tab-btn" id="btn-agent-correctness"><span>✅</span> Agent Correctness</button>
+                <button onclick="switchTab('agent-prompt')" class="tab-btn" id="btn-agent-prompt"><span>🔁</span> Agent → Unit Tests</button>
+                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge</button>
+                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Tests</button>
             </div>
-            <div id="tab-agent" class="tab-content active">
+            <div id="tab-agent-multi" class="tab-content active">
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-white p-6 rounded-lg border-l-4 border-purple-500 shadow-sm mb-8">
                         <div class="flex justify-between items-start mb-2"><h2 class="font-bold text-lg text-slate-800">Agent Verdict</h2><span class="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded border border-purple-100">Model: openhands</span></div>
                         <p class="text-slate-700 leading-relaxed">The algorithm correctly implements the strategy of maximizing weight gain on odd and even days by sorting the pizzas in descending order. However, it does not explicitly handle edge cases such as the minimum input size or ensure that the selection of pizzas is optimal across all possible combinations, which could lead to suboptimal results in certain scenarios.</p>
                     </div>
-                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3></div>
+                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3><span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded">⚠️ Demo: No logs available for this ID</span></div>
                     
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 1</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">I'll solve this step-by-step. Let me start by understanding the problem and then implement a solution.
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the problem and develop a strategy', 'status': 'in_progress', 'activeForm': 'Understanding the problem'}, {'content': 'Create solution.py with the implementation', 'status': 'pending', 'activeForm': 'Creating solution.py'}, {'content': 'Test the solution with check_solution.py', 'status': 'pending', 'activeForm': 'Testing the solution'}, {'content': 'Fix any failing tests and iterate', 'status': 'pending', 'activeForm': 'Fixing failing tests'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 2</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Write</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Let me analyze the problem:
-
-**Problem Analysis:**
-- We have n pizzas (n is a multiple of 4)
-- Each day we eat exactly 4 pizzas
-- On odd days (1st, 3rd, 5th...), we gain the weight of the heaviest pizza (Z)
-- On even days (2nd, 4th, 6th...), we gain the weight of the second heaviest pizza (Y)
-- We need to maximize the total weight gained
-
-**Key Insight:**
-Since we only gain weight from one pizza per day:
-- On odd days: we get the maximum of 4 pizzas
-- On even days: we get the second maximum of 4 pizzas
-
-This is a dynamic programming problem. We need to optimally partition all pizzas into groups of 4 to maximize the gains.
-
-Let me think about the strategy:
-- Sort the pizzas in descending order
-- Use DP where `dp[i]` represents the maximum weight we can gain after eating the first `i` pizzas
-- For each state, we try all possible ways to select 4 pizzas from remaining pizzas
-
-Actually, a greedy approach might work better here:
-- Sort pizzas in descending order
-- On odd days, take the largest available pizza as Z, and fill in the 3 other slots with smaller pizzas
-- On even days, take the second-largest available pizza as Y
-
-Let me implement and test:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'file_path': '/app/solution.py', 'content': 'from typing import List\n\nclass Solution:\n    def maxWeight(self, pizzas: List[int]) -> int:\n        """\n        Strategy:\n        - Sort pizzas in descending order\n        - On odd days: we want to maximize the heaviest pizza (Z)\n        - On even days: we want to maximize the second heaviest pizza (Y)\n\n        The key insight is that we want to use the largest pizzas for odd days (where we get their full weight)\n        and for even days, we want the second largest available to be as large as possible.\n\n        For each 4-pizza group:\n        - If it\'s an odd day group, the largest pizza in the group contributes to the total\n        - If it\'s an even day group, the second largest pizza in the group contributes to the total\n\n        Optimal strategy:\n        - Sort in descending order\n        - For odd day groups: pick the next largest pizza as Z, and 3 smallest pizzas to fill the slot\n        - For even day groups: pick the next two largest available pizzas (one will be Y), and 2 smallest to fill\n        """\n        pizzas.sort(reverse=True)\n        n = len(pizzas)\n        num_days = n // 4\n\n        total_weight = 0\n        idx = 0\n\n        for day in range(1, num_days + 1):\n            if day % 2 == 1:  # Odd day - we gain Z (the maximum)\n                total_weight += pizzas[idx]\n                idx += 1\n            else:  # Even day - we gain Y (the second maximum)\n                idx += 1  # Skip the largest (not used)\n                total_weight += pizzas[idx]\n                idx += 1\n\n        return total_weight\n'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">File created successfully at: /app/solution.py</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 3</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the problem and develop a strategy', 'status': 'completed', 'activeForm': 'Understanding the problem'}, {'content': 'Create solution.py with the implementation', 'status': 'completed', 'activeForm': 'Creating solution.py'}, {'content': 'Test the solution with check_solution.py', 'status': 'in_progress', 'activeForm': 'Testing the solution'}, {'content': 'Fix any failing tests and iterate', 'status': 'pending', 'activeForm': 'Fixing failing tests'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 4</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Bash</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Now let's test the solution:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'command': 'python check_solution.py', 'description': 'Run test suite on solution.py'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">🧪 Running sample test cases to check your solution...
-
-Running 2 sample test case(s):
-
-✅ PASSED sample_test_1
-
-✅ PASSED sample_test_2
-
-==================================================
-🎉 Great! All 2 sample test case(s) passed!
-Your solution looks good so far. The full test suite will run more comprehensive tests.
-==================================================</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 5</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Perfect! Both sample tests passed. Let me verify my logic is correct by tracing through the examples:
-
-**Example 1: pizzas = [1,2,3,4,5,6,7,8]**
-- Sorted descending: [8,7,6,5,4,3,2,1]
-- Day 1 (odd): Take 8, gain 8. (idx moves from 0 to 1)
-- Day 2 (even): Skip 7 (idx=1→2), take 6, gain 6. (idx moves to 3)
-- Result: 8 + 6 = 14 ✓
-
-**Example 2: pizzas = [2,1,1,1,1,1,1,1]**
-- Sorted descending: [2,1,1,1,1,1,1,1]
-- Day 1 (odd): Take 2, gain 2. (idx moves from 0 to 1)
-- Day 2 (even): Skip 1 (idx=1→2), take 1, gain 1. (idx moves to 3)
-- Result: 2 + 1 = 3 ✓
-
-The solution uses a greedy approach:
-- Sort pizzas in descending order
-- For odd days: take the next largest pizza (this is Z, the max of the 4)
-- For even days: skip one pizza and take the next one (this is Y, the second max of the 4)
-- The 3 unused pizzas in each group are implicitly the smallest ones
-
-This is optimal because we're maximizing the contribution from the largest pizzas by assigning them to positions where they contribute to our weight gain.
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the problem and develop a strategy', 'status': 'completed', 'activeForm': 'Understanding the problem'}, {'content': 'Create solution.py with the implementation', 'status': 'completed', 'activeForm': 'Creating solution.py'}, {'content': 'Test the solution with check_solution.py', 'status': 'completed', 'activeForm': 'Testing the solution'}, {'content': 'Fix any failing tests and iterate', 'status': 'completed', 'activeForm': 'Fixing failing tests'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 6</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">✅ **Solution Complete!**
-
-All sample tests passed! The solution uses a greedy approach:
-
-1. **Sort** pizzas in descending order
-2. **For odd days** (1, 3, 5...): Gain the largest remaining pizza (Z from the group of 4)
-3. **For even days** (2, 4, 6...): Skip one pizza, then gain the next one (Y from the group of 4)
-
-This is optimal because we're assigning the heaviest pizzas to count toward our weight gain. The smallest pizzas fill in the remaining slots of each 4-pizza group without contributing to the total.
-
-**Time Complexity:** O(n log n) for sorting
-**Space Complexity:** O(1) excluding the input
-</div></div>
-                                
-                                
-                            </div>
-                        </div>
-                        
+                         <div class="p-12 text-center border-2 border-dashed border-slate-300 rounded-lg bg-slate-50"><p class="text-slate-500 font-medium">No trajectory logs available for this task.</p><p class="text-slate-400 text-sm mt-2">(In this demo, only task <a href="task_2808__j8qegjl__ChgukeA.html" class="text-blue-600 underline hover:text-blue-800">2808...</a> has a real log file attached.)</p></div>
                     
                 </div>
             </div>

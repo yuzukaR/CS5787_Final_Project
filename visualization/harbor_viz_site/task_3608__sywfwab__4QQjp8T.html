@@ -170,135 +170,21 @@ class Solution:
         <div class="resize-handle" id="sidebar-resizer" title="Drag to resize"></div>
         <main class="main">
             <div class="tab-nav">
-                <button onclick="switchTab('agent')" class="tab-btn active" id="btn-agent"><span>🕵️</span> Agent Judge <span class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full ml-2">Trajectory</span></button>
-                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full ml-2">Reasoning</span></button>
-                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Test <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full ml-2">Logs</span></button>
+                <button onclick="switchTab('agent-multi')" class="tab-btn active" id="btn-agent-multi"><span>🕹️</span> Agent Multi-Aspect</button>
+                <button onclick="switchTab('agent-correctness')" class="tab-btn" id="btn-agent-correctness"><span>✅</span> Agent Correctness</button>
+                <button onclick="switchTab('agent-prompt')" class="tab-btn" id="btn-agent-prompt"><span>🔁</span> Agent → Unit Tests</button>
+                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge</button>
+                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Tests</button>
             </div>
-            <div id="tab-agent" class="tab-content active">
+            <div id="tab-agent-multi" class="tab-content active">
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-white p-6 rounded-lg border-l-4 border-purple-500 shadow-sm mb-8">
                         <div class="flex justify-between items-start mb-2"><h2 class="font-bold text-lg text-slate-800">Agent Verdict</h2><span class="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded border border-purple-100">Model: openhands</span></div>
                         <p class="text-slate-700 leading-relaxed">The algorithm uses a recursive approach with memoization to count valid subsequence pairs based on their GCDs. While the logic appears sound, it may struggle with larger inputs due to the exponential nature of subsequence generation, and edge cases such as all elements being the same or having a single element are not explicitly tested.</p>
                     </div>
-                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3></div>
+                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3><span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded">⚠️ Demo: No logs available for this ID</span></div>
                     
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 1</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">I'll solve this step by step. Let me start by understanding the problem and then create a solution.
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the problem and develop an approach', 'status': 'in_progress', 'activeForm': 'Understanding the problem'}, {'content': 'Create solution.py with initial implementation', 'status': 'pending', 'activeForm': 'Creating solution.py'}, {'content': 'Test solution with check_solution.py', 'status': 'pending', 'activeForm': 'Testing solution'}, {'content': 'Debug and fix any failing test cases', 'status': 'pending', 'activeForm': 'Debugging test failures'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 2</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Write</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Let me analyze this problem:
-
-**Understanding the Problem:**
-- We need to find pairs of disjoint subsequences from the array
-- Both subsequences must have the same GCD value
-- Disjoint means no element can be used in both subsequences
-- The order matters for counting (e.g., [1,2,3] in seq1 and [4] in seq2 is different from [1,2] in seq1 and [3,4] in seq2)
-
-**Approach:**
-1. For each element in nums, we can assign it to: seq1, seq2, or neither (3 choices per element)
-2. Use dynamic programming with memoization where state tracks GCD values in both sequences
-3. For each position, try assigning the current element to seq1, seq2, or skip it
-4. Track the GCD of elements in each sequence
-5. Count pairs where both subsequences are non-empty and have equal GCD
-
-Let me create the solution:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'file_path': '/app/solution.py', 'content': "from typing import List\nfrom functools import lru_cache\nfrom math import gcd\n\nclass Solution:\n    def subsequencePairCount(self, nums: List[int]) -> int:\n        MOD = 10**9 + 7\n        n = len(nums)\n\n        # Use memoization with recursion\n        # State: (index, gcd1, gcd2) where gcd1 is GCD of seq1, gcd2 is GCD of seq2\n        # 0 means empty sequence\n        @lru_cache(maxsize=None)\n        def dp(index, gcd1, gcd2):\n            # Base case: processed all elements\n            if index == n:\n                # Both sequences must be non-empty and have equal GCD\n                if gcd1 > 0 and gcd2 > 0 and gcd1 == gcd2:\n                    return 1\n                return 0\n\n            result = 0\n            current = nums[index]\n\n            # Option 1: Add to seq1\n            new_gcd1 = gcd(gcd1, current) if gcd1 > 0 else current\n            result += dp(index + 1, new_gcd1, gcd2)\n            result %= MOD\n\n            # Option 2: Add to seq2\n            new_gcd2 = gcd(gcd2, current) if gcd2 > 0 else current\n            result += dp(index + 1, gcd1, new_gcd2)\n            result %= MOD\n\n            # Option 3: Skip (don't add to either sequence)\n            result += dp(index + 1, gcd1, gcd2)\n            result %= MOD\n\n            return result\n\n        return dp(0, 0, 0)\n"}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">File created successfully at: /app/solution.py</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 3</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the problem and develop an approach', 'status': 'completed', 'activeForm': 'Understanding the problem'}, {'content': 'Create solution.py with initial implementation', 'status': 'completed', 'activeForm': 'Creating solution.py'}, {'content': 'Test solution with check_solution.py', 'status': 'in_progress', 'activeForm': 'Testing solution'}, {'content': 'Debug and fix any failing test cases', 'status': 'pending', 'activeForm': 'Debugging test failures'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 4</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Bash</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Now let me test the solution:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'command': 'python check_solution.py', 'description': 'Run the test suite for the solution'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">🧪 Running sample test cases to check your solution...
-
-Running 3 sample test case(s):
-
-✅ PASSED sample_test_1
-
-✅ PASSED sample_test_2
-
-✅ PASSED sample_test_3
-
-==================================================
-🎉 Great! All 3 sample test case(s) passed!
-Your solution looks good so far. The full test suite will run more comprehensive tests.
-==================================================</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 5</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Excellent! All tests passed! Let me update the todo list:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the problem and develop an approach', 'status': 'completed', 'activeForm': 'Understanding the problem'}, {'content': 'Create solution.py with initial implementation', 'status': 'completed', 'activeForm': 'Creating solution.py'}, {'content': 'Test solution with check_solution.py', 'status': 'completed', 'activeForm': 'Testing solution'}, {'content': 'Debug and fix any failing test cases', 'status': 'completed', 'activeForm': 'Debugging test failures'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 6</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Perfect! ✅ All sample test cases passed successfully!
-
-## Solution Summary
-
-I've created a solution that uses **dynamic programming with memoization** to solve this problem efficiently.
-
-**Key Algorithm Points:**
-
-1. **Three Choices Per Element**: For each element in the array, we have 3 options:
-   - Add it to the first subsequence (seq1)
-   - Add it to the second subsequence (seq2)
-   - Skip it (add to neither)
-
-2. **State Tracking**: The DP state is `(index, gcd1, gcd2)` where:
-   - `index` is the current position in the array
-   - `gcd1` is the current GCD of seq1 (0 means empty)
-   - `gcd2` is the current GCD of seq2 (0 means empty)
-
-3. **Base Case**: When all elements are processed, we count the pair only if:
-   - Both subsequences are non-empty (gcd1 > 0 and gcd2 > 0)
-   - Their GCDs are equal (gcd1 == gcd2)
-
-4. **Recursive Case**: For each element, try all 3 options and sum the results
-
-5. **Efficiency**: Memoization ensures we don't recompute the same states. The cache effectively reduces exponential time complexity since the number of distinct GCD values is limited (bounded by divisors of numbers up to 200).
-
-The solution correctly handles all test cases including:
-- Example 1: nums = [1,2,3,4] → 10
-- Example 2: nums = [10,20,30] → 2
-- Example 3: nums = [1,1,1,1] → 50
-</div></div>
-                                
-                                
-                            </div>
-                        </div>
-                        
+                         <div class="p-12 text-center border-2 border-dashed border-slate-300 rounded-lg bg-slate-50"><p class="text-slate-500 font-medium">No trajectory logs available for this task.</p><p class="text-slate-400 text-sm mt-2">(In this demo, only task <a href="task_2808__j8qegjl__ChgukeA.html" class="text-blue-600 underline hover:text-blue-800">2808...</a> has a real log file attached.)</p></div>
                     
                 </div>
             </div>

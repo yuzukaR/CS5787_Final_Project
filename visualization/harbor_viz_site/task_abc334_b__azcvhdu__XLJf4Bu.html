@@ -102,137 +102,21 @@ else:
         <div class="resize-handle" id="sidebar-resizer" title="Drag to resize"></div>
         <main class="main">
             <div class="tab-nav">
-                <button onclick="switchTab('agent')" class="tab-btn active" id="btn-agent"><span>🕵️</span> Agent Judge <span class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full ml-2">Trajectory</span></button>
-                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full ml-2">Reasoning</span></button>
-                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Test <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full ml-2">Logs</span></button>
+                <button onclick="switchTab('agent-multi')" class="tab-btn active" id="btn-agent-multi"><span>🕹️</span> Agent Multi-Aspect</button>
+                <button onclick="switchTab('agent-correctness')" class="tab-btn" id="btn-agent-correctness"><span>✅</span> Agent Correctness</button>
+                <button onclick="switchTab('agent-prompt')" class="tab-btn" id="btn-agent-prompt"><span>🔁</span> Agent → Unit Tests</button>
+                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge</button>
+                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Tests</button>
             </div>
-            <div id="tab-agent" class="tab-content active">
+            <div id="tab-agent-multi" class="tab-content active">
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-white p-6 rounded-lg border-l-4 border-purple-500 shadow-sm mb-8">
                         <div class="flex justify-between items-start mb-2"><h2 class="font-bold text-lg text-slate-800">Agent Verdict</h2><span class="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded border border-purple-100">Model: openhands</span></div>
                         <p class="text-slate-700 leading-relaxed">The algorithm correctly calculates the number of Christmas trees between the given coordinates by determining the valid range of integers k. It handles edge cases, such as when L equals R, and efficiently computes the result using mathematical operations, ensuring it operates within the constraints.</p>
                     </div>
-                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3></div>
+                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3><span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded">⚠️ Demo: No logs available for this ID</span></div>
                     
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 1</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">I'll solve this step-by-step.
-
-First, let me understand the problem:
-- Christmas trees are placed at positions A, A+M, A+2M, A+3M, ... (and also A-M, A-2M, etc.)
-- We need to count how many trees are in the range [L, R]
-- We need an efficient solution since the coordinates can be very large (up to 10^18)
-
-Let me create a plan and implement the solution.
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the mathematical approach to count trees in range [L, R]', 'status': 'in_progress', 'activeForm': 'Understanding the mathematical approach'}, {'content': 'Create solution.py with the counting algorithm', 'status': 'pending', 'activeForm': 'Creating solution.py'}, {'content': 'Test solution.py with sample test cases', 'status': 'pending', 'activeForm': 'Testing solution.py'}, {'content': 'Fix any failing tests and iterate', 'status': 'pending', 'activeForm': 'Fixing failing tests'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 2</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Write</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">The key insight is:
-- We need to find the number of integers k such that L ≤ A + k*M ≤ R
-- Rearranging: (L - A)/M ≤ k ≤ (R - A)/M
-- We need to count integers in this range
-
-The algorithm:
-1. Find the minimum k: k_min = ceil((L - A) / M)
-2. Find the maximum k: k_max = floor((R - A) / M)
-3. Answer = max(0, k_max - k_min + 1)
-
-Let me implement this:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'file_path': '/app/solution.py', 'content': 'import math\n\nA, M, L, R = map(int, input().split())\n\n# We need to find the number of integers k such that L <= A + k*M <= R\n# Rearranging: (L - A) / M <= k <= (R - A) / M\n\n# Find minimum k such that A + k*M >= L\n# k >= (L - A) / M, so k_min = ceil((L - A) / M)\nk_min = math.ceil((L - A) / M)\n\n# Find maximum k such that A + k*M <= R\n# k <= (R - A) / M, so k_max = floor((R - A) / M)\nk_max = math.floor((R - A) / M)\n\n# Count integers from k_min to k_max (inclusive)\nif k_max < k_min:\n    print(0)\nelse:\n    print(k_max - k_min + 1)\n'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">File created successfully at: /app/solution.py</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 3</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the mathematical approach to count trees in range [L, R]', 'status': 'completed', 'activeForm': 'Understanding the mathematical approach'}, {'content': 'Create solution.py with the counting algorithm', 'status': 'completed', 'activeForm': 'Creating solution.py'}, {'content': 'Test solution.py with sample test cases', 'status': 'in_progress', 'activeForm': 'Testing solution.py'}, {'content': 'Fix any failing tests and iterate', 'status': 'pending', 'activeForm': 'Fixing failing tests'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 4</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Bash</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Now let me test the solution with the sample cases:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'command': 'python check_solution.py', 'description': 'Test solution with sample test cases'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">🧪 Running sample test cases to check your solution...
-
-Running 3 sample test case(s):
-
-✅ PASSED sample_test_1
-
-✅ PASSED sample_test_2
-
-✅ PASSED sample_test_3
-
-==================================================
-🎉 Great! All 3 sample test case(s) passed!
-Your solution looks good so far. The full test suite will run more comprehensive tests.
-==================================================</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 5</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Bash</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Perfect! Let me verify the logic with the first sample case manually:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'command': 'python3 << \'EOF\'\n# Sample 1: A=5, M=3, L=-1, R=6\n# Trees at: ..., -4, -1, 2, 5, 8, ...\n# In range [-1, 6]: -1, 2, 5 (3 trees)\n\nA, M, L, R = 5, 3, -1, 6\n\n# k_min = ceil((L - A) / M) = ceil((-1 - 5) / 3) = ceil(-2) = -2\n# k_max = floor((R - A) / M) = floor((6 - 5) / 3) = floor(1/3) = 0\n\nimport math\nk_min = math.ceil((L - A) / M)\nk_max = math.floor((R - A) / M)\n\nprint(f"k_min = {k_min}, k_max = {k_max}")\nprint(f"count = {k_max - k_min + 1}")\n\n# Check the trees:\nfor k in range(k_min - 1, k_max + 2):\n    tree_pos = A + k * M\n    in_range = L <= tree_pos <= R\n    print(f"k={k}: position={tree_pos}, in_range={in_range}")\nEOF\n', 'description': 'Verify the logic with sample 1'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">k_min = -2, k_max = 0
-count = 3
-k=-3: position=-4, in_range=False
-k=-2: position=-1, in_range=True
-k=-1: position=2, in_range=True
-k=0: position=5, in_range=True
-k=1: position=8, in_range=False</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 6</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Excellent! The solution is working correctly. Let me mark the remaining todos:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the mathematical approach to count trees in range [L, R]', 'status': 'completed', 'activeForm': 'Understanding the mathematical approach'}, {'content': 'Create solution.py with the counting algorithm', 'status': 'completed', 'activeForm': 'Creating solution.py'}, {'content': 'Test solution.py with sample test cases', 'status': 'completed', 'activeForm': 'Testing solution.py'}, {'content': 'Fix any failing tests and iterate', 'status': 'completed', 'activeForm': 'Fixing failing tests'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 7</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">## Solution Complete! ✅
-
-All sample test cases passed! Here's a summary of the solution:
-
-**Approach:**
-- Trees are placed at positions A + k*M for all integers k
-- To count trees in range [L, R], we need to count integers k where: L ≤ A + k*M ≤ R
-- Rearranging: (L - A)/M ≤ k ≤ (R - A)/M
-- Find k_min = ceil((L - A)/M) and k_max = floor((R - A)/M)
-- Answer = max(0, k_max - k_min + 1)
-
-**Key insight:** Using ceiling and floor functions correctly handles negative coordinates and non-integer divisions efficiently, avoiding issues with large numbers (up to 10^18).
-
-The solution passes all 3 sample test cases including the large one with 10^18 magnitude numbers.
-</div></div>
-                                
-                                
-                            </div>
-                        </div>
-                        
+                         <div class="p-12 text-center border-2 border-dashed border-slate-300 rounded-lg bg-slate-50"><p class="text-slate-500 font-medium">No trajectory logs available for this task.</p><p class="text-slate-400 text-sm mt-2">(In this demo, only task <a href="task_2808__j8qegjl__ChgukeA.html" class="text-blue-600 underline hover:text-blue-800">2808...</a> has a real log file attached.)</p></div>
                     
                 </div>
             </div>

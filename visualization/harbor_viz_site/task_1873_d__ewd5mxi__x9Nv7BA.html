@@ -127,146 +127,21 @@ for _ in range(t):
         <div class="resize-handle" id="sidebar-resizer" title="Drag to resize"></div>
         <main class="main">
             <div class="tab-nav">
-                <button onclick="switchTab('agent')" class="tab-btn active" id="btn-agent"><span>🕵️</span> Agent Judge <span class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full ml-2">Trajectory</span></button>
-                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full ml-2">Reasoning</span></button>
-                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Test <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full ml-2">Logs</span></button>
+                <button onclick="switchTab('agent-multi')" class="tab-btn active" id="btn-agent-multi"><span>🕹️</span> Agent Multi-Aspect</button>
+                <button onclick="switchTab('agent-correctness')" class="tab-btn" id="btn-agent-correctness"><span>✅</span> Agent Correctness</button>
+                <button onclick="switchTab('agent-prompt')" class="tab-btn" id="btn-agent-prompt"><span>🔁</span> Agent → Unit Tests</button>
+                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge</button>
+                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Tests</button>
             </div>
-            <div id="tab-agent" class="tab-content active">
+            <div id="tab-agent-multi" class="tab-content active">
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-white p-6 rounded-lg border-l-4 border-purple-500 shadow-sm mb-8">
                         <div class="flex justify-between items-start mb-2"><h2 class="font-bold text-lg text-slate-800">Agent Verdict</h2><span class="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded border border-purple-100">Model: openhands</span></div>
                         <p class="text-slate-700 leading-relaxed">The algorithm correctly identifies and processes black cells, but it may not optimally cover all black cells in certain configurations, potentially leading to more operations than necessary. The time complexity is acceptable, but edge cases such as consecutive black cells or varying lengths of k could be better handled.</p>
                     </div>
-                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3></div>
+                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3><span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded">⚠️ Demo: No logs available for this ID</span></div>
                     
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 1</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Write</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">I'll solve this step by step.
-
-First, let me understand the problem:
-- We have a strip of paper with black (B) and white (W) cells
-- In each operation, we can make any k consecutive cells white
-- We need to find the minimum number of operations to make all cells white
-
-Let me think about the strategy:
-- We need to cover all black cells with operations
-- Each operation covers k consecutive cells
-- We want to minimize the number of operations
-
-The greedy approach would be:
-1. Scan from left to right
-2. When we find a black cell, perform an operation starting such that it covers this black cell and extends as far right as possible
-3. Continue until all black cells are covered
-
-Let me implement and test this:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'file_path': '/app/solution.py', 'content': "def solve(n, k, s):\n    # Convert string to list for easier manipulation\n    cells = list(s)\n    operations = 0\n\n    i = 0\n    while i < n:\n        # Find the next black cell\n        if cells[i] == 'B':\n            # Found a black cell at position i\n            # Perform an operation starting at position max(0, i - k + 1) to cover this black cell\n            # But we want to extend as far right as possible\n            # So the operation should start at position i (if possible) and go until i + k - 1\n            # Or if i + k > n, we adjust to end at n - 1\n\n            # The operation covers cells from position i to position min(i + k - 1, n - 1)\n            # But we need to ensure we cover cell i\n            # So we should place the operation to cover [i, min(i + k - 1, n - 1)]\n            start = max(0, i)  # We could also optimize by going back\n            end = min(i + k - 1, n - 1)\n\n            # Actually, let me reconsider\n            # When we find a black cell at position i, we want to place an operation\n            # that covers it and extends as far right as possible\n            # The rightmost position we can start is i (to cover this black cell)\n            # and it will cover up to i + k - 1\n\n            # But if i + k - 1 >= n, we might want to start earlier to use the full range\n            # Actually no, we just want to cover i to min(i + k - 1, n - 1)\n\n            # Mark cells from i to min(i + k - 1, n - 1) as white\n            for j in range(i, min(i + k, n)):\n                cells[j] = 'W'\n\n            operations += 1\n            i += 1\n        else:\n            i += 1\n\n    return operations\n\n# Read input\nt = int(input())\nfor _ in range(t):\n    n, k = map(int, input().split())\n    s = input().strip()\n    print(solve(n, k, s))\n"}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">File created successfully at: /app/solution.py</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 2</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Bash</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Now let me check if there's a check_solution.py file:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'command': 'ls -la /app/*.py', 'description': 'List Python files in /app directory'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">-rw-rw-r-- 1 root root 11244 Nov  3 19:03 /app/check_solution.py
--rw-r--r-- 1 root root  1775 Nov  4 21:18 /app/solution.py</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 3</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Bash</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Great! Now let me test my solution:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'command': 'python check_solution.py', 'description': 'Test solution with check_solution.py'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">🧪 Running sample test cases to check your solution...
-
-Running 1 sample test case(s):
-
-✅ PASSED sample_test_1
-
-==================================================
-🎉 Great! All 1 sample test case(s) passed!
-Your solution looks good so far. The full test suite will run more comprehensive tests.
-==================================================</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 4</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Bash</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Excellent! My solution passed the sample test. Let me verify my logic by tracing through one of the examples:
-
-Example 1: n=6, k=3, s="WBWWWB"
-- i=0: 'W', move to i=1
-- i=1: 'B', perform operation covering cells 1,2,3 → cells become "WWWWWB", operations=1, i=2
-- i=2: 'W', move to i=3
-- i=3: 'W', move to i=4
-- i=4: 'W', move to i=5
-- i=5: 'B', perform operation covering cells 5,6,7 (but only 5 exists) → cells become "WWWWWW", operations=2
-- Result: 2 operations ✓
-
-The greedy approach works:
-1. Scan left to right
-2. When encountering a black cell at position i, perform an operation that covers cells from i to i+k-1 (or until n-1 if closer)
-3. This marks k consecutive cells as white starting from the first black cell found
-4. Continue scanning
-
-This is optimal because:
-- Each operation must cover at least one black cell
-- By placing an operation at a black cell and extending it k cells to the right, we maximize the potential to cover future black cells
-- Moving forward ensures we don't revisit already-covered areas
-
-The solution passed the test! Let me verify the check_solution.py output one more time to make sure everything is working:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'command': 'python check_solution.py 2>&1 | tail -20', 'description': 'Check final test results'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">🧪 Running sample test cases to check your solution...
-
-Running 1 sample test case(s):
-
-✅ PASSED sample_test_1
-
-==================================================
-🎉 Great! All 1 sample test case(s) passed!
-Your solution looks good so far. The full test suite will run more comprehensive tests.
-==================================================</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 5</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Perfect! My solution has been successfully created and tested. Here's a summary:
-
-## Solution Summary
-
-**Problem:** Minimize the number of operations to remove all black cells, where each operation makes k consecutive cells white.
-
-**Algorithm:** Greedy approach
-1. Scan the string from left to right
-2. When a black cell is found at position i, perform an operation covering cells [i, min(i+k-1, n-1)]
-3. Continue until all cells are scanned
-
-**Time Complexity:** O(n) - single pass through the string
-**Space Complexity:** O(n) - for storing the cell array
-
-**Key Insight:** The greedy approach is optimal because:
-- Each operation must cover at least one black cell
-- By placing an operation starting at a black cell and extending k cells to the right, we maximize coverage of future black cells
-- This minimizes the total number of operations needed
-
-The solution has passed all sample test cases and is ready for submission!
-</div></div>
-                                
-                                
-                            </div>
-                        </div>
-                        
+                         <div class="p-12 text-center border-2 border-dashed border-slate-300 rounded-lg bg-slate-50"><p class="text-slate-500 font-medium">No trajectory logs available for this task.</p><p class="text-slate-400 text-sm mt-2">(In this demo, only task <a href="task_2808__j8qegjl__ChgukeA.html" class="text-blue-600 underline hover:text-blue-800">2808...</a> has a real log file attached.)</p></div>
                     
                 </div>
             </div>

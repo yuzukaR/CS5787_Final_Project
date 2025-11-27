@@ -14,7 +14,8 @@ import pandas as pd
 BASE_DIR = Path(__file__).resolve().parent.parent
 CSV_FILE = BASE_DIR / "outputs" / "results" / "trivial" / "trivial_combined_results_summary.csv"
 JSON_DETAILS_FILE = BASE_DIR / "outputs" / "results" / "trivial" / "trivial_combined_results_summary.json"
-LOGS_ROOT = BASE_DIR / "data" / "raw" / "inference_result"
+AGENT_MULTI_ROOT = BASE_DIR / "agent_multi_spec_vanilla"
+AGENT_UNIT_PROMPT_ROOT = BASE_DIR / "agent_unit_test_judge_result"
 OUTPUT_DIR = Path(__file__).resolve().parent / "harbor_viz_site"
 LOG_FILE_CANDIDATES = [
     "claude-code.txt",
@@ -22,30 +23,43 @@ LOG_FILE_CANDIDATES = [
     "trajectory.json",
     "log.jsonl",
     "log.json",
+    "openhands.trajectory.json"
 ]
 
 if OUTPUT_DIR.exists():
     shutil.rmtree(OUTPUT_DIR)
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-print("正在加载数据...")
+print("Loading leaderboard data ...")
 df = pd.read_csv(CSV_FILE)
 
-def build_log_dir_index(log_root: Path):
+def canonical_task_prefix(identifier: str) -> str:
+    parts = [part for part in identifier.split('__') if part]
+    if len(parts) >= 2:
+        return '__'.join(parts[:2])
+    return identifier
+
+
+def build_agent_run_index(root: Path):
     index = {}
-    if not log_root.exists():
-        print(f"⚠️ 日志目录 {log_root} 不存在。")
+    if not root.exists():
+        print(f"⚠️ Agent log root {root} not found.")
         return index
-    for entry in log_root.iterdir():
+    for entry in root.iterdir():
         if entry.is_dir():
-            index[entry.name.lower()] = entry
+            prefix = canonical_task_prefix(entry.name).lower()
+            index.setdefault(prefix, []).append(entry)
+    for prefix in index:
+        index[prefix].sort(key=lambda p: p.stat().st_mtime, reverse=True)
     return index
 
-LOG_DIR_INDEX = build_log_dir_index(LOGS_ROOT)
+
+AGENT_MULTI_INDEX = build_agent_run_index(AGENT_MULTI_ROOT)
+AGENT_UNIT_PROMPT_INDEX = build_agent_run_index(AGENT_UNIT_PROMPT_ROOT)
 
 def load_detail_index(path: Path):
     if not path.exists():
-        print(f"⚠️ 详情 JSON 文件 {path} 不存在。")
+        print(f"⚠️ Detail JSON file {path} does not exist.")
         return {}
     try:
         payload = json.load(path.open("r", encoding="utf-8"))
@@ -57,44 +71,111 @@ def load_detail_index(path: Path):
                 index[entry_id] = entry
         return index
     except Exception as exc:
-        print(f"⚠️ 无法解析详情 JSON：{exc}")
+        print(f"⚠️ Unable to parse detail JSON: {exc}")
         return {}
 
 DETAIL_LOOKUP = load_detail_index(JSON_DETAILS_FILE)
 
 # 解析日志 (复用逻辑)
-def parse_logs(log_path):
-    steps = []
-    current_step = {}
+def parse_logs(log_path: Path):
+    if not log_path or not log_path.exists():
+        return []
     try:
-        if log_path is None:
-            return []
-        with open(log_path, 'r', encoding='utf-8') as f:
-            for line in f:
-                try:
-                    entry = json.loads(line)
-                    msg_type = entry.get('type')
-                    if msg_type == 'assistant':
-                        content = entry.get('message', {}).get('content', [])
-                        for item in content:
-                            if item['type'] == 'text':
-                                current_step['thought'] = current_step.get('thought', "") + item['text'] + "\n"
-                            elif item['type'] == 'tool_use':
-                                current_step['action'] = {'name': item['name'], 'input': item['input']}
-                    elif msg_type == 'user':
-                        content = entry.get('message', {}).get('content', [])
-                        for item in content:
-                            if item.get('type') == 'tool_result':
-                                current_step['observation'] = item['content']
-                                steps.append(current_step)
-                                current_step = {}
-                except:
-                    continue
-        if current_step:
-            steps.append(current_step)
+        raw_text = log_path.read_text(encoding='utf-8')
     except FileNotFoundError:
         return []
+    if not raw_text.strip():
+        return []
+
+    def convert_structured_steps(payload):
+        if isinstance(payload, dict) and "steps" in payload:
+            steps = payload["steps"]
+        elif isinstance(payload, list):
+            steps = payload
+        else:
+            return []
+        converted = []
+        for step in steps:
+            entry = {
+                "speaker": step.get("source") or step.get("role"),
+                "message": (step.get("message") or step.get("content") or "").strip()
+            }
+            tool_calls = step.get("tool_calls") or []
+            if tool_calls:
+                formatted_calls = []
+                for call in tool_calls:
+                    formatted_calls.append({
+                        "name": call.get("function_name") or call.get("name"),
+                        "arguments": call.get("arguments")
+                    })
+                entry["tool_calls"] = formatted_calls
+            observation = step.get("observation")
+            if observation is not None:
+                if isinstance(observation, (dict, list)):
+                    entry["observation"] = json.dumps(observation, ensure_ascii=False, indent=2)
+                else:
+                    entry["observation"] = str(observation)
+            metrics = step.get("metrics")
+            if metrics:
+                entry["metrics"] = metrics
+            if any(entry.get(key) for key in ("speaker", "message", "tool_calls", "observation")):
+                converted.append(entry)
+        return converted
+
+    try:
+        structured_payload = json.loads(raw_text)
+        structured_steps = convert_structured_steps(structured_payload)
+        if structured_steps:
+            return structured_steps
+    except json.JSONDecodeError:
+        pass
+
+    steps = []
+    current_step = {}
+    for line in raw_text.splitlines():
+        if not line.strip():
+            continue
+        try:
+            entry = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        msg_type = entry.get('type')
+        if msg_type == 'assistant':
+            content = entry.get('message', {}).get('content', [])
+            for item in content:
+                if item.get('type') == 'text':
+                    current_step['thought'] = current_step.get('thought', "") + item.get('text', "") + "\n"
+                elif item.get('type') == 'tool_use':
+                    current_step['action'] = {'name': item.get('name'), 'input': item.get('input')}
+        elif msg_type == 'user':
+            content = entry.get('message', {}).get('content', [])
+            for item in content:
+                if item.get('type') == 'tool_result':
+                    current_step['observation'] = item.get('content')
+                    steps.append(current_step)
+                    current_step = {}
+    if current_step:
+        steps.append(current_step)
     return steps
+
+
+def find_agent_log_file(task_id: str, index: dict, root: Path):
+    if not index:
+        return None
+    prefix = canonical_task_prefix(task_id).lower()
+    candidate_dirs = index.get(prefix, [])
+    for directory in candidate_dirs:
+        agent_dir = directory / "agent"
+        if not agent_dir.exists():
+            continue
+        for file_name in LOG_FILE_CANDIDATES:
+            candidate_file = agent_dir / file_name
+            if candidate_file.exists():
+                return candidate_file
+        for candidate_file in agent_dir.glob("*trajectory*.json*"):
+            if candidate_file.exists():
+                return candidate_file
+    return None
 
 def clean_problem_description(text: str) -> str:
     if not text:
@@ -182,46 +263,17 @@ def escape_text(text: str) -> str:
         return ""
     return html.escape(str(text))
 
-def find_log_file_for_task(task_id: str):
-    identifier = str(task_id or "").strip()
-    if not identifier or not LOG_DIR_INDEX:
-        return None
-
-    parts = [part for part in identifier.split('__') if part]
-    candidates = []
-    if parts:
-        for i in range(len(parts), 0, -1):
-            candidates.append('__'.join(parts[:i]))
-    else:
-        candidates.append(identifier)
-
-    for cand in candidates:
-        dir_path = LOG_DIR_INDEX.get(cand.lower())
-        if dir_path:
-            agent_dir = dir_path / "agent"
-            if not agent_dir.exists():
-                continue
-            for file_name in LOG_FILE_CANDIDATES:
-                log_file = agent_dir / file_name
-                if log_file.exists():
-                    return log_file
-            for candidate_file in agent_dir.glob("*"):
-                if candidate_file.is_file() and candidate_file.suffix.lower() in {".txt", ".json", ".jsonl"}:
-                    return candidate_file
-    return None
-
 # ==========================================
 # 2. 定义模板 (重点修改了 INDEX_TEMPLATE)
 # ==========================================
 
-# 🆕 新版首页：卡片视图
 INDEX_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harbor Evaluation Benchmark</title>
+    <title>CS5787 Final Project</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         window.MathJax = {
@@ -281,8 +333,8 @@ INDEX_TEMPLATE = """
     
     <header class="max-w-7xl mx-auto mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-            <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight">Harbor Benchmark</h1>
-            <p class="text-slate-500 mt-2 text-lg">Comparing <span class="text-blue-600 font-semibold">LLM Judge</span> vs <span class="text-purple-600 font-semibold">Agent Judge</span> vs <span class="text-green-600 font-semibold">Unit Tests</span></p>
+            <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight">CS5787 Final Project</h1>
+            <p class="text-slate-500 mt-2 text-lg">Comparing <span class="text-blue-600 font-semibold">LLM Judges</span>, <span class="text-purple-600 font-semibold">Agent Judges</span>, and <span class="text-green-600 font-semibold">Unit Tests</span></p>
         </div>
         <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm font-medium text-slate-500">
             Total Tasks: <span class="text-slate-900 font-bold">{{ tasks|length }}</span>
@@ -416,11 +468,13 @@ DETAIL_TEMPLATE = """
         <div class="resize-handle" id="sidebar-resizer" title="Drag to resize"></div>
         <main class="main">
             <div class="tab-nav">
-                <button onclick="switchTab('agent')" class="tab-btn active" id="btn-agent"><span>🕵️</span> Agent Judge <span class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full ml-2">Trajectory</span></button>
-                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full ml-2">Reasoning</span></button>
-                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Test <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full ml-2">Logs</span></button>
+                <button onclick="switchTab('agent-multi')" class="tab-btn active" id="btn-agent-multi"><span>🕹️</span> Agent Multi-Aspect</button>
+                <button onclick="switchTab('agent-correctness')" class="tab-btn" id="btn-agent-correctness"><span>✅</span> Agent Correctness</button>
+                <button onclick="switchTab('agent-prompt')" class="tab-btn" id="btn-agent-prompt"><span>🔁</span> Agent → Unit Tests</button>
+                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge</button>
+                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Tests</button>
             </div>
-            <div id="tab-agent" class="tab-content active">
+            <div id="tab-agent-multi" class="tab-content active">
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-white p-6 rounded-lg border-l-4 border-purple-500 shadow-sm mb-8">
                         <div class="flex justify-between items-start mb-2"><h2 class="font-bold text-lg text-slate-800">Agent Verdict</h2><span class="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded border border-purple-100">Model: {{ models.agent }}</span></div>
@@ -574,7 +628,7 @@ def get_score_text_color(score):
         return "text-med"
     return "text-low"
 
-print("正在生成首页 (Card Layout)...")
+print("Building dashboard index ...")
 tasks_data = []
 
 for _, row in df.iterrows():
@@ -631,14 +685,16 @@ index_path = OUTPUT_DIR / "index.html"
 with index_path.open("w", encoding='utf-8') as f:
     f.write(template_index.render(tasks=tasks_data))
 
-print("正在生成详情页...")
+print("Building task detail pages ...")
 template_detail = jinja2.Template(DETAIL_TEMPLATE)
 
 for _, row in df.iterrows():
     task_id = str(row.get('ID', '')).strip()
     safe_id = task_id.replace('/', '_').replace('\\', '_')
-    log_path = find_log_file_for_task(task_id)
-    current_trajectory = parse_logs(log_path)
+    agent_multi_log = find_agent_log_file(task_id, AGENT_MULTI_INDEX, AGENT_MULTI_ROOT)
+    agent_prompt_log = find_agent_log_file(task_id, AGENT_UNIT_PROMPT_INDEX, AGENT_UNIT_PROMPT_ROOT)
+    agent_multi_trajectory = parse_logs(agent_multi_log)
+    agent_prompt_trajectory = parse_logs(agent_prompt_log)
     detail_entry = DETAIL_LOOKUP.get(task_id)
 
     def pick_score_detail(detail_key, csv_key):
@@ -683,15 +739,18 @@ for _, row in df.iterrows():
         },
         models={
             "llm": detail_entry.get('llm_model') if detail_entry and detail_entry.get('llm_model') else row.get('LLM name', ''),
-            "agent": detail_entry.get('agent_model') if detail_entry and detail_entry.get('agent_model') else row.get('Agent LLM name', '')
+            "agent": detail_entry.get('agent_model') if detail_entry and detail_entry.get('agent_model') else row.get('Agent LLM name', ''),
+            "unit_agent": "openhands"
         },
-        has_trajectory=bool(current_trajectory),
-        trajectory=current_trajectory
+        agent_multi_trajectory=agent_multi_trajectory,
+        agent_prompt_trajectory=agent_prompt_trajectory,
+        has_agent_multi_logs=bool(agent_multi_trajectory),
+        has_agent_prompt_logs=bool(agent_prompt_trajectory),
+        agent_correctness_status="Pending"
     )
     
     detail_path = OUTPUT_DIR / f"task_{safe_id}.html"
     with detail_path.open("w", encoding='utf-8') as f:
         f.write(html_content)
 
-print("[OK] 网站生成成功！卡片风格已应用。")
-print(f"请打开文件夹 '{OUTPUT_DIR}' 并双击 'index.html' 查看效果。")
+print("[OK] Site build complete. Open the generated index.html to preview.")

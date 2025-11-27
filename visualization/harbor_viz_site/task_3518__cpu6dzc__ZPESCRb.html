@@ -142,127 +142,21 @@ class Solution:
         <div class="resize-handle" id="sidebar-resizer" title="Drag to resize"></div>
         <main class="main">
             <div class="tab-nav">
-                <button onclick="switchTab('agent')" class="tab-btn active" id="btn-agent"><span>🕵️</span> Agent Judge <span class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full ml-2">Trajectory</span></button>
-                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full ml-2">Reasoning</span></button>
-                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Test <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full ml-2">Logs</span></button>
+                <button onclick="switchTab('agent-multi')" class="tab-btn active" id="btn-agent-multi"><span>🕹️</span> Agent Multi-Aspect</button>
+                <button onclick="switchTab('agent-correctness')" class="tab-btn" id="btn-agent-correctness"><span>✅</span> Agent Correctness</button>
+                <button onclick="switchTab('agent-prompt')" class="tab-btn" id="btn-agent-prompt"><span>🔁</span> Agent → Unit Tests</button>
+                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge</button>
+                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Tests</button>
             </div>
-            <div id="tab-agent" class="tab-content active">
+            <div id="tab-agent-multi" class="tab-content active">
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-white p-6 rounded-lg border-l-4 border-purple-500 shadow-sm mb-8">
                         <div class="flex justify-between items-start mb-2"><h2 class="font-bold text-lg text-slate-800">Agent Verdict</h2><span class="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded border border-purple-100">Model: openhands</span></div>
                         <p class="text-slate-700 leading-relaxed">The algorithm uses dynamic programming to correctly compute the maximum score based on the given constraints. However, it does not explicitly handle cases where the input array `b` has fewer than 4 elements, which could lead to incorrect results if the constraints are not guaranteed. Overall, it is a strong solution with minor concerns.</p>
                     </div>
-                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3></div>
+                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3><span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded">⚠️ Demo: No logs available for this ID</span></div>
                     
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 1</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">I'll solve this step-by-step.
-
-First, let me understand the problem:
-- We have array `a` of size 4 and array `b` of size at least 4
-- We need to choose 4 indices from `b` in increasing order
-- Calculate the score: `a[0]*b[i0] + a[1]*b[i1] + a[2]*b[i2] + a[3]*b[i3]`
-- Find the maximum possible score
-
-Let me create a todo list and start implementing:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Analyze the problem and develop solution approach', 'status': 'in_progress', 'activeForm': 'Analyzing the problem'}, {'content': 'Create solution.py with initial implementation', 'status': 'pending', 'activeForm': 'Creating solution.py'}, {'content': 'Test with check_solution.py', 'status': 'pending', 'activeForm': 'Testing with check_solution.py'}, {'content': 'Fix any failing test cases', 'status': 'pending', 'activeForm': 'Fixing test failures'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 2</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Write</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">**Analysis:**
-
-This is a dynamic programming problem. We need to select 4 indices in strictly increasing order from array `b` to maximize the weighted sum.
-
-The key insight is to use DP where we track:
-- Which position in array `a` we're filling (0, 1, 2, 3)
-- The maximum score we can achieve after choosing that many elements
-
-Approach:
-- Use DP: `dp[i]` = maximum score after choosing `i` elements
-- For each position in array `b`, we decide whether to include it or not
-- When we include `b[j]` as the i-th element, we add `a[i-1] * b[j]` to the previous best score
-
-Let me implement this:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'file_path': '/app/solution.py', 'content': 'from typing import List\n\nclass Solution:\n    def maxScore(self, a: List[int], b: List[int]) -> int:\n        """\n        Dynamic programming approach:\n        dp[i] represents the maximum score when we have selected i elements from b\n\n        For each element in b, we decide whether to include it or not.\n        If we include b[j] as the i-th element, the score becomes:\n        dp[i] = max(dp[i], dp[i-1] + a[i-1] * b[j])\n        """\n        # dp[i] = max score after selecting i elements\n        dp = [float(\'-inf\')] * 5  # indices 0 to 4, we need index 4 for final answer\n        dp[0] = 0  # base case: 0 elements selected = 0 score\n\n        # Iterate through each element in b\n        for num in b:\n            # Process in reverse to avoid using the same element twice\n            for i in range(4, 0, -1):\n                if dp[i-1] != float(\'-inf\'):\n                    dp[i] = max(dp[i], dp[i-1] + a[i-1] * num)\n\n        return dp[4]\n'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">File created successfully at: /app/solution.py</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 3</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Now let me update the todo and test the solution:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Analyze the problem and develop solution approach', 'status': 'completed', 'activeForm': 'Analyzed the problem'}, {'content': 'Create solution.py with initial implementation', 'status': 'completed', 'activeForm': 'Created solution.py'}, {'content': 'Test with check_solution.py', 'status': 'in_progress', 'activeForm': 'Testing with check_solution.py'}, {'content': 'Fix any failing test cases', 'status': 'pending', 'activeForm': 'Fixing test failures'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 4</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Bash</span></div>
-                            <div class="p-4">
-                                
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'command': 'python check_solution.py', 'description': 'Run check_solution.py to test the solution'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">🧪 Running sample test cases to check your solution...
-
-Running 2 sample test case(s):
-
-✅ PASSED sample_test_1
-
-✅ PASSED sample_test_2
-
-==================================================
-🎉 Great! All 2 sample test case(s) passed!
-Your solution looks good so far. The full test suite will run more comprehensive tests.
-==================================================</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 5</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Perfect! Both sample test cases passed! Let me update the todo list to mark all tasks as completed:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Analyze the problem and develop solution approach', 'status': 'completed', 'activeForm': 'Analyzed the problem'}, {'content': 'Create solution.py with initial implementation', 'status': 'completed', 'activeForm': 'Created solution.py'}, {'content': 'Test with check_solution.py', 'status': 'completed', 'activeForm': 'Tested with check_solution.py'}, {'content': 'Fix any failing test cases', 'status': 'completed', 'activeForm': 'Fixed test failures'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 6</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">## Solution Summary
-
-✅ **All tests passed!**
-
-**Algorithm:** Dynamic Programming
-
-**Key idea:**
-- `dp[i]` = maximum score after selecting exactly `i` elements from array `b`
-- Initialize `dp[0] = 0` (selecting 0 elements = 0 score)
-- For each element in `b`, iterate backward through `dp[1]` to `dp[4]`
-- When including `b[j]` as the i-th element: `dp[i] = max(dp[i], dp[i-1] + a[i-1] * b[j])`
-- Process backward to avoid using the same element twice
-- Return `dp[4]` (the maximum score with 4 elements selected)
-
-**Time Complexity:** O(n) where n is the length of array `b`
-**Space Complexity:** O(1) - using only a fixed-size DP array
-
-The solution correctly handles both examples and passes all sample test cases!
-</div></div>
-                                
-                                
-                            </div>
-                        </div>
-                        
+                         <div class="p-12 text-center border-2 border-dashed border-slate-300 rounded-lg bg-slate-50"><p class="text-slate-500 font-medium">No trajectory logs available for this task.</p><p class="text-slate-400 text-sm mt-2">(In this demo, only task <a href="task_2808__j8qegjl__ChgukeA.html" class="text-blue-600 underline hover:text-blue-800">2808...</a> has a real log file attached.)</p></div>
                     
                 </div>
             </div>

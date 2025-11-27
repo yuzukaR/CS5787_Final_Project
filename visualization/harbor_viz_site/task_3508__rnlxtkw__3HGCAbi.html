@@ -141,202 +141,21 @@ class Solution:
         <div class="resize-handle" id="sidebar-resizer" title="Drag to resize"></div>
         <main class="main">
             <div class="tab-nav">
-                <button onclick="switchTab('agent')" class="tab-btn active" id="btn-agent"><span>🕵️</span> Agent Judge <span class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full ml-2">Trajectory</span></button>
-                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full ml-2">Reasoning</span></button>
-                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Test <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full ml-2">Logs</span></button>
+                <button onclick="switchTab('agent-multi')" class="tab-btn active" id="btn-agent-multi"><span>🕹️</span> Agent Multi-Aspect</button>
+                <button onclick="switchTab('agent-correctness')" class="tab-btn" id="btn-agent-correctness"><span>✅</span> Agent Correctness</button>
+                <button onclick="switchTab('agent-prompt')" class="tab-btn" id="btn-agent-prompt"><span>🔁</span> Agent → Unit Tests</button>
+                <button onclick="switchTab('llm')" class="tab-btn" id="btn-llm"><span>🧠</span> LLM Judge</button>
+                <button onclick="switchTab('unit')" class="tab-btn" id="btn-unit"><span>⚡</span> Unit Tests</button>
             </div>
-            <div id="tab-agent" class="tab-content active">
+            <div id="tab-agent-multi" class="tab-content active">
                 <div class="max-w-4xl mx-auto">
                     <div class="bg-white p-6 rounded-lg border-l-4 border-purple-500 shadow-sm mb-8">
                         <div class="flex justify-between items-start mb-2"><h2 class="font-bold text-lg text-slate-800">Agent Verdict</h2><span class="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded border border-purple-100">Model: openhands</span></div>
                         <p class="text-slate-700 leading-relaxed">The algorithm correctly identifies when it is impossible to convert `n` to `k` and counts the necessary bit changes efficiently. It handles edge cases well, but could be slightly optimized by using built-in functions for counting bits.</p>
                     </div>
-                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3></div>
+                    <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-slate-700 text-sm uppercase tracking-wider">Execution Trajectory</h3><span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded">⚠️ Demo: No logs available for this ID</span></div>
                     
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 1</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">I'll help you solve this problem. Let me start by understanding the problem and then implement a solution.
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the problem requirements', 'status': 'in_progress', 'activeForm': 'Understanding the problem'}, {'content': 'Create solution.py with the initial implementation', 'status': 'pending', 'activeForm': 'Creating solution.py'}, {'content': 'Test the solution with check_solution.py', 'status': 'pending', 'activeForm': 'Testing the solution'}, {'content': 'Fix any failing tests', 'status': 'pending', 'activeForm': 'Fixing failing tests'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 2</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Write</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Let me analyze the problem:
-
-**Problem Summary:**
-- We can only change bits from 1 to 0 in `n`
-- We need to make `n` equal to `k`
-- If it's impossible, return -1
-
-**Key Insights:**
-1. If a bit in `k` is 1 but the corresponding bit in `n` is 0, it's impossible (we can't change 0 to 1)
-2. If a bit in `n` is 1 but the corresponding bit in `k` is 0, we need to change it (1 change)
-3. If both bits are the same, no change needed
-4. Count the positions where `n` has 1 and `k` has 0
-
-**Algorithm:**
-- Use XOR to find differing bits: `n ^ k`
-- Check if `k` has any bits that `n` doesn't have: `(n ^ k) & k`
-  - If this is non-zero, it's impossible
-- Otherwise, count the 1s in positions where `n` has 1 and `k` has 0
-
-Let me implement this:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'file_path': '/app/solution.py', 'content': "class Solution:\n    def minChanges(self, n: int, k: int) -> int:\n        # If k has a bit set to 1 that n doesn't have, it's impossible\n        # This can be checked with: if (n & k) != k\n        # Or equivalently: if (n ^ k) & k != 0\n\n        if (n & k) != k:\n            # k has bits that n doesn't have\n            return -1\n\n        # Count the bits that are 1 in n but 0 in k\n        # This is the number of changes needed\n        diff = n ^ k\n\n        # Count the number of 1s in diff\n        count = 0\n        while diff:\n            count += diff & 1\n            diff >>= 1\n\n        return count\n"}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">File created successfully at: /app/solution.py</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 3</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the problem requirements', 'status': 'completed', 'activeForm': 'Understanding the problem'}, {'content': 'Create solution.py with the initial implementation', 'status': 'completed', 'activeForm': 'Creating solution.py'}, {'content': 'Test the solution with check_solution.py', 'status': 'in_progress', 'activeForm': 'Testing the solution'}, {'content': 'Fix any failing tests', 'status': 'pending', 'activeForm': 'Fixing failing tests'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 4</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Bash</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Now let me test the solution:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'command': 'python check_solution.py', 'description': 'Run the test checker for the solution'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">🧪 Running sample test cases to check your solution...
-
-Running 3 sample test case(s):
-
-✅ PASSED sample_test_1
-
-✅ PASSED sample_test_2
-
-✅ PASSED sample_test_3
-
-==================================================
-🎉 Great! All 3 sample test case(s) passed!
-Your solution looks good so far. The full test suite will run more comprehensive tests.
-==================================================</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 5</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">Read</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">Perfect! All test cases passed! Let me verify my solution once more by looking at what was added:
-</div></div>
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'file_path': '/app/solution.py'}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">     1→from string import *
-     2→from re import *
-     3→from datetime import *
-     4→from collections import *
-     5→from heapq import *
-     6→from bisect import *
-     7→from copy import *
-     8→from math import *
-     9→from random import *
-    10→from statistics import *
-    11→from itertools import *
-    12→from functools import *
-    13→from operator import *
-    14→from io import *
-    15→from sys import *
-    16→from json import *
-    17→from builtins import *
-    18→from typing import List, Dict, Set, Tuple, Optional, Union, Any
-    19→import string
-    20→import re
-    21→import datetime
-    22→import collections
-    23→import heapq
-    24→import bisect
-    25→import copy
-    26→import math
-    27→import random
-    28→import statistics
-    29→import itertools
-    30→import functools
-    31→import operator
-    32→import io
-    33→import sys
-    34→import json
-    35→sys.setrecursionlimit(50000)
-    36→
-    37→class Solution:
-    38→    def minChanges(self, n: int, k: int) -> int:
-    39→        # If k has a bit set to 1 that n doesn't have, it's impossible
-    40→        # This can be checked with: if (n & k) != k
-    41→        # Or equivalently: if (n ^ k) & k != 0
-    42→
-    43→        if (n & k) != k:
-    44→            # k has bits that n doesn't have
-    45→            return -1
-    46→
-    47→        # Count the bits that are 1 in n but 0 in k
-    48→        # This is the number of changes needed
-    49→        diff = n ^ k
-    50→
-    51→        # Count the number of 1s in diff
-    52→        count = 0
-    53→        while diff:
-    54→            count += diff & 1
-    55→            diff >>= 1
-    56→
-    57→        return count
-    58→
-
-<system-reminder>
-Whenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.
-</system-reminder>
-</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 6</span><span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold font-mono">TodoWrite</span></div>
-                            <div class="p-4">
-                                
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Action Input</span><pre class="bg-slate-50 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 overflow-x-auto"><code>{'todos': [{'content': 'Understand the problem requirements', 'status': 'completed', 'activeForm': 'Understanding the problem'}, {'content': 'Create solution.py with the initial implementation', 'status': 'completed', 'activeForm': 'Creating solution.py'}, {'content': 'Test the solution with check_solution.py', 'status': 'completed', 'activeForm': 'Testing the solution'}, {'content': 'Fix any failing tests', 'status': 'completed', 'activeForm': 'Fixing failing tests'}]}</code></pre></div>
-                                <div><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Observation</span><pre class="bg-slate-100 border border-slate-200 rounded p-3 text-xs font-mono text-slate-600 max-h-48 overflow-y-auto whitespace-pre-wrap">Todos have been modified successfully. Ensure that you continue to use the todo list to track your progress. Please proceed with the current tasks if applicable</pre></div>
-                            </div>
-                        </div>
-                        
-                        <div class="trajectory-step">
-                            <div class="step-header"><span class="font-bold text-xs text-slate-500">STEP 7</span></div>
-                            <div class="p-4">
-                                <div class="mb-4"><span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Thought</span><div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap font-sans border-l-2 border-slate-200 pl-3">## Solution Complete! ✅
-
-Your solution for **number-of-bit-changes-to-make-two-integers-equal** is working correctly!
-
-### How the Solution Works:
-
-**Algorithm:**
-1. **Check Impossibility**: If `k` has any bit set to 1 that `n` doesn't have (checked via `(n & k) != k`), it's impossible to make them equal since we can only change 1→0, not 0→1. Return -1.
-
-2. **Count Changes Needed**: If it's possible, we count the bits where `n` has 1 but `k` has 0:
-   - Use XOR: `diff = n ^ k` (gives 1 where bits differ)
-   - Count the 1-bits in `diff` (these are the bits we need to change from 1 to 0)
-
-**Time Complexity**: O(log n) - we iterate through the bits of the difference
-
-**Space Complexity**: O(1) - only using a couple of variables
-
-### Test Results:
-✅ All 3 sample test cases passed:
-- Example 1: n=13 (1101), k=4 (0100) → 2 changes
-- Example 2: n=21, k=21 → 0 changes  
-- Example 3: n=14 (1110), k=13 (1101) → -1 (impossible)
-</div></div>
-                                
-                                
-                            </div>
-                        </div>
-                        
+                         <div class="p-12 text-center border-2 border-dashed border-slate-300 rounded-lg bg-slate-50"><p class="text-slate-500 font-medium">No trajectory logs available for this task.</p><p class="text-slate-400 text-sm mt-2">(In this demo, only task <a href="task_2808__j8qegjl__ChgukeA.html" class="text-blue-600 underline hover:text-blue-800">2808...</a> has a real log file attached.)</p></div>
                     
                 </div>
             </div>
